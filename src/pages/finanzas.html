@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Finanzas - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div id="contenido-finanzas" class="hidden">
+            <!-- Filtros de fecha -->
+            <div
+              class="bg-ink-soft border border-ink-border rounded-xl p-4 sm:p-5 mb-6"
+            >
+              <div class="flex flex-col lg:flex-row lg:items-end gap-4">
+                <div class="flex-1 min-w-0">
+                  <span
+                    class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+                  >
+                    Desde
+                  </span>
+                  <input
+                    type="text"
+                    id="filtro-desde"
+                    class="w-full bg-ink border border-ink-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+                    placeholder="dd/mm/aaaa"
+                  />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span
+                    class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+                  >
+                    Hasta
+                  </span>
+                  <input
+                    type="text"
+                    id="filtro-hasta"
+                    class="w-full bg-ink border border-ink-border rounded-lg px-4 py-2.5 text-sm text-white placeholder-zinc-500 focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+                    placeholder="dd/mm/aaaa"
+                  />
+                </div>
+                <div class="tabla-acciones flex gap-2 lg:ml-auto">
+                  <button
+                    id="btn-limpiar-fechas"
+                    class="btn-secondary whitespace-nowrap"
+                  >
+                    Limpiar
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tarjetas principales -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mb-6">
+              <div class="bg-ink-soft border border-ink-border rounded-xl p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs text-zinc-500 uppercase tracking-wider">
+                    Ingresos
+                  </p>
+                  <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-brand/10"
+                  >
+                    <svg
+                      class="w-4 h-4 text-brand"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 11l5-5m0 0l5 5m-5-5v12"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <p
+                  id="stat-ingresos"
+                  class="text-2xl sm:text-3xl font-bold text-brand"
+                >
+                  $0
+                </p>
+              </div>
+
+              <div class="bg-ink-soft border border-ink-border rounded-xl p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs text-zinc-500 uppercase tracking-wider">
+                    Egresos
+                  </p>
+                  <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-red-500/10"
+                  >
+                    <svg
+                      class="w-4 h-4 text-red-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 13l-5 5m0 0l-5-5m5 5V6"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <p
+                  id="stat-egresos"
+                  class="text-2xl sm:text-3xl font-bold text-red-500"
+                >
+                  $0
+                </p>
+              </div>
+
+              <div class="bg-ink-soft border border-ink-border rounded-xl p-5">
+                <div class="flex items-center justify-between mb-2">
+                  <p class="text-xs text-zinc-500 uppercase tracking-wider">
+                    Balance
+                  </p>
+                  <span
+                    id="balance-icono"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/5"
+                  >
+                    <svg
+                      id="balance-svg"
+                      class="w-4 h-4 text-zinc-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </span>
+                </div>
+                <p id="stat-balance" class="text-2xl sm:text-3xl font-bold">
+                  $0
+                </p>
+              </div>
+            </div>
+
+            <!-- Detalle por categoría -->
+            <div class="bg-ink-soft border border-ink-border rounded-xl p-5">
+              <h3 class="font-bold mb-4">Detalle por categoría</h3>
+              <div id="detalle-categorias" class="space-y-3">
+                <div class="text-zinc-500 text-sm text-center py-8">
+                  Cargando...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="loader-finanzas"
+            class="flex items-center justify-center py-20"
+          >
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-brand border-t-transparent"
+            ></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+    <script type="module" src="../js/finanzas.js"></script>
+  </body>
+</html>

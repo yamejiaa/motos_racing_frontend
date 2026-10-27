@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Servicios - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <!-- ═══════════════════════════════════════ -->
+          <!-- Vista: Catalogo de servicios            -->
+          <!-- ═══════════════════════════════════════ -->
+          <div id="vista-catalogo" class="hidden">
+            <div id="tabla-servicios"></div>
+          </div>
+
+          <!-- ═══════════════════════════════════════ -->
+          <!-- Vista: Servicios diarios                -->
+          <!-- ═══════════════════════════════════════ -->
+          <div id="vista-diarios" class="hidden">
+            <div id="tabla-diarios"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- Modal crear/editar servicio (catalogo)     -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div
+      id="modal-servicio"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 id="modal-servicio-titulo" class="text-lg font-bold">
+            Nuevo servicio
+          </h2>
+        </div>
+
+        <form
+          id="form-servicio"
+          class="flex-1 overflow-y-auto px-6 py-5"
+          novalidate
+        >
+          <input type="hidden" id="servicio-id" />
+
+          <div class="field mb-4">
+            <input type="text" id="servicio-nombre" placeholder=" " required />
+            <label for="servicio-nombre">Nombre del servicio</label>
+          </div>
+
+          <div class="field mb-4">
+            <textarea
+              id="servicio-descripcion"
+              placeholder=" "
+              rows="3"
+            ></textarea>
+            <label for="servicio-descripcion">Descripcion (opcional)</label>
+          </div>
+
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="servicio-precio"
+              placeholder=" "
+              inputmode="numeric"
+              required
+            />
+            <label for="servicio-precio">Precio base</label>
+          </div>
+        </form>
+
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-cancelar-servicio"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-servicio"
+            id="btn-guardar-servicio"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- Modal registrar servicio diario             -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div
+      id="modal-diario"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-lg bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 class="text-lg font-bold">Registrar servicio diario</h2>
+        </div>
+
+        <form
+          id="form-diario"
+          class="flex-1 overflow-y-auto px-6 py-5"
+          novalidate
+        >
+          <!-- Servicio con buscador -->
+          <div class="mb-4">
+            <label
+              class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+            >
+              Servicio realizado
+            </label>
+            <div class="relative">
+              <button
+                type="button"
+                id="btn-select-servicio"
+                class="w-full bg-ink border border-ink-border rounded-lg px-4 py-3 text-sm text-white flex items-center justify-between gap-2 hover:border-brand focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+              >
+                <span id="label-select-servicio" class="truncate text-zinc-500"
+                  >Seleccionar servicio...</span
+                >
+                <svg
+                  class="w-4 h-4 shrink-0 text-zinc-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <input type="hidden" id="diario-servicio-id" />
+
+              <div
+                id="dropdown-servicio"
+                class="hidden absolute z-50 mt-1.5 w-full bg-ink-soft border border-ink-border rounded-lg shadow-2xl py-1.5 max-h-64 overflow-y-auto"
+              >
+                <div
+                  class="px-3 pb-2 pt-1 sticky top-0 bg-ink-soft border-b border-ink-border"
+                >
+                  <input
+                    type="text"
+                    id="buscador-servicio"
+                    placeholder="Buscar servicio..."
+                    class="w-full bg-ink border border-ink-border rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-brand transition-all"
+                  />
+                </div>
+                <div id="lista-servicios-opciones"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mecanico con buscador -->
+          <div class="mb-4">
+            <label
+              class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+            >
+              Mecanico que lo realizo
+            </label>
+            <div class="relative">
+              <button
+                type="button"
+                id="btn-select-mecanico"
+                class="w-full bg-ink border border-ink-border rounded-lg px-4 py-3 text-sm text-white flex items-center justify-between gap-2 hover:border-brand focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+              >
+                <span id="label-select-mecanico" class="truncate text-zinc-500"
+                  >Seleccionar mecanico...</span
+                >
+                <svg
+                  class="w-4 h-4 shrink-0 text-zinc-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <input type="hidden" id="diario-mecanico-id" />
+
+              <div
+                id="dropdown-mecanico"
+                class="hidden absolute z-50 mt-1.5 w-full bg-ink-soft border border-ink-border rounded-lg shadow-2xl py-1.5 max-h-64 overflow-y-auto"
+              >
+                <div
+                  class="px-3 pb-2 pt-1 sticky top-0 bg-ink-soft border-b border-ink-border"
+                >
+                  <input
+                    type="text"
+                    id="buscador-mecanico"
+                    placeholder="Buscar por nombre o cedula..."
+                    class="w-full bg-ink border border-ink-border rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-brand transition-all"
+                  />
+                </div>
+                <div id="lista-mecanicos-opciones"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Precio -->
+          <div class="field mb-4">
+            <input type="text" id="diario-precio" placeholder=" " readonly />
+            <label for="diario-precio">Precio del servicio</label>
+          </div>
+
+          <!-- Monto recibido -->
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="diario-recibido"
+              placeholder=" "
+              inputmode="numeric"
+              required
+            />
+            <label for="diario-recibido">Monto recibido (efectivo)</label>
+          </div>
+
+          <!-- Resumen calculado -->
+          <div
+            id="diario-resumen"
+            class="hidden bg-ink border border-ink-border rounded-xl p-4 space-y-2 text-sm"
+          >
+            <div class="flex justify-between">
+              <span class="text-zinc-500">Cambio a devolver:</span>
+              <span id="diario-cambio" class="font-medium text-white">$0</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-zinc-500">Comision del mecanico:</span>
+              <span
+                id="diario-comision-mecanico"
+                class="font-medium text-yellow-500"
+                >$0</span
+              >
+            </div>
+            <div class="flex justify-between">
+              <span class="text-zinc-500">Comision del taller:</span>
+              <span id="diario-comision-taller" class="font-medium text-brand"
+                >$0</span
+              >
+            </div>
+          </div>
+        </form>
+
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-cancelar-diario"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-diario"
+            id="btn-guardar-diario"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Confirmar servicio
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════ -->
+    <!-- Modal detalle de servicio diario            -->
+    <!-- ═══════════════════════════════════════════ -->
+    <div
+      id="modal-detalle-diario"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-lg bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 class="text-lg font-bold">Detalle del servicio</h2>
+        </div>
+
+        <div
+          id="detalle-diario-contenido"
+          class="flex-1 overflow-y-auto px-6 py-5"
+        ></div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/servicios.js"></script>
+  </body>
+</html>

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Configuración - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div id="contenido-config" class="hidden max-w-3xl mx-auto space-y-6">
+            <!-- Datos del taller -->
+            <div
+              class="bg-ink-soft border border-ink-border rounded-xl p-5 sm:p-6"
+            >
+              <div class="flex items-center gap-3 mb-5">
+                <span
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand/10"
+                >
+                  <svg
+                    class="w-5 h-5 text-brand"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                    />
+                  </svg>
+                </span>
+                <div>
+                  <h2 class="font-bold text-lg">Datos del taller</h2>
+                  <p class="text-xs text-zinc-500">
+                    Información general del negocio
+                  </p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="field">
+                  <input
+                    type="text"
+                    id="cfg-nombre"
+                    placeholder=" "
+                    maxlength="100"
+                  />
+                  <label for="cfg-nombre">Nombre del taller</label>
+                </div>
+
+                <div class="field">
+                  <input
+                    type="text"
+                    id="cfg-nit"
+                    placeholder=" "
+                    maxlength="30"
+                  />
+                  <label for="cfg-nit">NIT</label>
+                </div>
+
+                <div class="field">
+                  <input
+                    type="text"
+                    id="cfg-direccion"
+                    placeholder=" "
+                    maxlength="150"
+                  />
+                  <label for="cfg-direccion">Dirección</label>
+                </div>
+
+                <div class="field">
+                  <input
+                    type="tel"
+                    id="cfg-telefono"
+                    placeholder=" "
+                    maxlength="20"
+                  />
+                  <label for="cfg-telefono">Teléfono</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Parámetros financieros -->
+            <div
+              class="bg-ink-soft border border-ink-border rounded-xl p-5 sm:p-6"
+            >
+              <div class="flex items-center gap-3 mb-5">
+                <span
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand/10"
+                >
+                  <svg
+                    class="w-5 h-5 text-brand"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </span>
+                <div>
+                  <h2 class="font-bold text-lg">Parámetros financieros</h2>
+                  <p class="text-xs text-zinc-500">
+                    Impuestos y descuentos por defecto
+                  </p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="field">
+                  <input
+                    type="text"
+                    id="cfg-iva"
+                    placeholder=" "
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    maxlength="3"
+                    autocomplete="off"
+                  />
+                  <label for="cfg-iva">IVA (%)</label>
+                </div>
+
+                <div class="field">
+                  <input
+                    type="text"
+                    id="cfg-descuento"
+                    placeholder=" "
+                    inputmode="numeric"
+                    pattern="[0-9]*"
+                    maxlength="3"
+                    autocomplete="off"
+                  />
+                  <label for="cfg-descuento">Descuento por defecto (%)</label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex justify-end gap-3">
+              <button id="btn-reset-config" class="btn-secondary">
+                Descartar cambios
+              </button>
+              <button
+                id="btn-guardar-config"
+                class="btn-primary flex items-center gap-2"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+                Guardar cambios
+              </button>
+            </div>
+          </div>
+
+          <div
+            id="loader-config"
+            class="flex items-center justify-center py-20"
+          >
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-brand border-t-transparent"
+            ></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="../js/configuracion.js"></script>
+  </body>
+</html>

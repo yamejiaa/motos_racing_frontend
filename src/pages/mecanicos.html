@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Mecanicos - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <!-- Vista: Todos los mecanicos -->
+          <div id="vista-lista" class="hidden">
+            <div id="tabla-mecanicos"></div>
+          </div>
+
+          <!-- Vista: Pagos y comisiones -->
+          <div id="vista-pagos" class="hidden">
+            <div id="pagos-contenido"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal crear/editar mecanico -->
+    <div
+      id="modal-mecanico"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-lg bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 id="modal-mecanico-titulo" class="text-lg font-bold">
+            Nuevo mecanico
+          </h2>
+        </div>
+
+        <form
+          id="form-mecanico"
+          class="flex-1 overflow-y-auto px-6 py-5"
+          novalidate
+        >
+          <input type="hidden" id="mecanico-id" />
+
+          <div class="field mb-4">
+            <input type="text" id="mecanico-nombre" placeholder=" " required />
+            <label for="mecanico-nombre">Nombre completo</label>
+          </div>
+
+          <div class="field mb-4">
+            <input type="email" id="mecanico-email" placeholder=" " required />
+            <label for="mecanico-email">Correo electronico</label>
+          </div>
+
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="mecanico-cedula"
+              placeholder=" "
+              inputmode="numeric"
+              maxlength="10"
+              required
+            />
+            <label for="mecanico-cedula">Cedula</label>
+          </div>
+
+          <div class="field mb-4">
+            <input
+              type="tel"
+              id="mecanico-telefono"
+              placeholder=" "
+              inputmode="numeric"
+              maxlength="10"
+            />
+            <label for="mecanico-telefono">Telefono (opcional)</label>
+          </div>
+
+          <div class="field mb-4">
+            <input type="text" id="mecanico-especialidad" placeholder=" " />
+            <label for="mecanico-especialidad">Especialidad (opcional)</label>
+          </div>
+
+          <div class="field mb-4">
+            <input type="text" id="mecanico-direccion" placeholder=" " />
+            <label for="mecanico-direccion">Direccion (opcional)</label>
+          </div>
+
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="mecanico-fecha-ingreso"
+              class="input-fecha"
+              placeholder=" "
+            />
+            <label for="mecanico-fecha-ingreso"
+              >Fecha de ingreso (opcional)</label
+            >
+            <button
+              type="button"
+              class="btn-fecha-hoy field-icon"
+              data-target="mecanico-fecha-ingreso"
+              title="Usar fecha actual"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="9" stroke-width="2" />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 12h18M12 3a15 15 0 010 18M12 3a15 15 0 000 18"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div class="field mb-4">
+            <textarea id="mecanico-notas" placeholder=" " rows="3"></textarea>
+            <label for="mecanico-notas">Notas (opcional)</label>
+          </div>
+        </form>
+
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-cancelar-mecanico"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-mecanico"
+            id="btn-guardar-mecanico"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal detalle mecanico -->
+    <div
+      id="modal-detalle-mecanico"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-2xl bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <div class="min-w-0">
+            <h2 id="detalle-mecanico-titulo" class="text-lg font-bold truncate">
+              Detalle del mecanico
+            </h2>
+            <p
+              id="detalle-mecanico-subtitulo"
+              class="text-xs text-zinc-500 truncate"
+            >
+              -
+            </p>
+          </div>
+          <button
+            id="btn-cerrar-detalle-mecanico"
+            class="p-1 text-zinc-500 hover:text-white shrink-0"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <div
+          id="detalle-mecanico-contenido"
+          class="flex-1 overflow-y-auto px-6 py-5"
+        ></div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/mecanicos.js"></script>
+  </body>
+</html>

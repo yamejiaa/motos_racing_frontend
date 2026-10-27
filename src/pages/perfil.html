@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Mi Perfil - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div id="contenido-perfil" class="hidden max-w-3xl mx-auto space-y-6">
+            <!-- Tarjeta: Avatar + Info básica -->
+            <div class="bg-ink-soft border border-ink-border rounded-xl p-6">
+              <div class="flex flex-col sm:flex-row items-center gap-5">
+                <div
+                  id="perfil-avatar"
+                  class="w-20 h-20 rounded-full bg-brand flex items-center justify-center text-white font-bold text-2xl shrink-0"
+                >
+                  --
+                </div>
+                <div class="text-center sm:text-left min-w-0 flex-1">
+                  <h2
+                    id="perfil-nombre-display"
+                    class="font-bold text-xl truncate"
+                  >
+                    Cargando...
+                  </h2>
+                  <p
+                    id="perfil-email-display"
+                    class="text-zinc-500 text-sm truncate"
+                  >
+                    -
+                  </p>
+                  <span
+                    id="perfil-rol-badge"
+                    class="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-full bg-brand/10 text-brand text-xs font-medium"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
+                    Administrador
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Formulario: Editar datos -->
+            <div
+              class="bg-ink-soft border border-ink-border rounded-xl p-5 sm:p-6"
+            >
+              <div class="flex items-center gap-3 mb-5">
+                <span
+                  class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-brand/10"
+                >
+                  <svg
+                    class="w-5 h-5 text-brand"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                    />
+                  </svg>
+                </span>
+                <div>
+                  <h2 class="font-bold text-lg">Información personal</h2>
+                  <p class="text-xs text-zinc-500">
+                    Actualiza tus datos de acceso
+                  </p>
+                </div>
+              </div>
+
+              <div class="space-y-4">
+                <div class="field">
+                  <input
+                    type="text"
+                    id="perfil-nombre"
+                    placeholder=" "
+                    maxlength="100"
+                  />
+                  <label for="perfil-nombre">Nombre completo</label>
+                </div>
+
+                <div class="field">
+                  <input type="email" id="perfil-email" placeholder=" " />
+                  <label for="perfil-email">Correo electrónico</label>
+                </div>
+
+                <div class="field">
+                  <input
+                    type="tel"
+                    id="perfil-telefono"
+                    placeholder=" "
+                    maxlength="20"
+                  />
+                  <label for="perfil-telefono">Teléfono</label>
+                </div>
+              </div>
+
+              <div
+                class="flex justify-end gap-3 mt-6 pt-5 border-t border-ink-border"
+              >
+                <button id="btn-reset-perfil" class="btn-secondary">
+                  Descartar cambios
+                </button>
+                <button
+                  id="btn-guardar-perfil"
+                  class="btn-primary flex items-center gap-2"
+                >
+                  <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Guardar cambios
+                </button>
+              </div>
+            </div>
+
+            <!-- Info de la cuenta (no editable) -->
+            <div class="bg-ink-soft border border-ink-border rounded-xl p-5">
+              <h3
+                class="text-xs text-zinc-500 uppercase tracking-wider font-medium mb-3"
+              >
+                Información de la cuenta
+              </h3>
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between items-center">
+                  <span class="text-zinc-500">Rol</span>
+                  <span class="text-white">Administrador</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-zinc-500">Último acceso</span>
+                  <span id="perfil-ultimo-acceso" class="text-white">-</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-zinc-500">Estado</span>
+                  <span
+                    id="perfil-estado-badge"
+                    class="inline-flex items-center gap-1.5 text-brand text-xs font-medium"
+                  >
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
+                    Activo
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="loader-perfil"
+            class="flex items-center justify-center py-20"
+          >
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-brand border-t-transparent"
+            ></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <script type="module" src="../js/perfil.js"></script>
+  </body>
+</html>

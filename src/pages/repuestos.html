@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <title>Repuestos - Motos Racing Quibdo</title>
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
+    />
+    <link rel="stylesheet" href="../css/tailwind.css" />
+    <style>
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #recibo-print,
+        #recibo-print * {
+          visibility: visible;
+        }
+        #recibo-print {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 80mm;
+          padding: 5mm;
+          background: white;
+          color: black;
+          font-family: "Courier New", monospace;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-ink text-white h-[100dvh] overflow-hidden">
+    <div id="app-layout" class="flex h-[100dvh]">
+      <div
+        id="app-content"
+        class="flex-1 lg:ml-72 flex flex-col h-[100dvh] min-w-0"
+      >
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+          <div id="vista-catalogo" class="hidden">
+            <div id="tabla-repuestos"></div>
+          </div>
+
+          <div id="vista-vender" class="hidden">
+            <div id="vender-contenido"></div>
+          </div>
+
+          <div id="vista-historial" class="hidden">
+            <div id="historial-contenido"></div>
+          </div>
+
+          <div id="vista-marcas" class="hidden">
+            <div id="tabla-marcas"></div>
+          </div>
+
+          <div id="vista-categorias" class="hidden">
+            <div id="tabla-categorias"></div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Modal repuesto (catalogo) -->
+    <div
+      id="modal-repuesto"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-2xl bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 id="modal-repuesto-titulo" class="text-lg font-bold">
+            Nuevo repuesto
+          </h2>
+        </div>
+
+        <form
+          id="form-repuesto"
+          class="flex-1 overflow-y-auto px-6 py-5"
+          novalidate
+        >
+          <input type="hidden" id="repuesto-id" />
+
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="repuesto-referencia"
+              placeholder=" "
+              readonly
+            />
+            <label for="repuesto-referencia">Referencia (auto-generada)</label>
+          </div>
+
+          <div class="field mb-4">
+            <input type="text" id="repuesto-nombre" placeholder=" " required />
+            <label for="repuesto-nombre">Nombre del repuesto</label>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+                >Marca</label
+              >
+              <div class="relative" data-dropdown-repuesto="marca">
+                <button
+                  type="button"
+                  class="rep-dropdown-toggle w-full bg-ink border border-ink-border rounded-lg px-4 py-3 text-sm text-white flex items-center justify-between gap-2 hover:border-brand focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+                >
+                  <span class="rep-dropdown-label truncate text-zinc-500"
+                    >Sin marca</span
+                  >
+                  <svg
+                    class="w-4 h-4 shrink-0 text-zinc-500 rep-dropdown-chevron transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <input type="hidden" id="repuesto-marca" />
+                <div
+                  class="rep-dropdown-menu hidden absolute z-50 mt-1.5 w-full bg-ink-soft border border-ink-border rounded-lg shadow-2xl py-1.5 max-h-64 overflow-y-auto"
+                >
+                  <div
+                    class="px-3 pb-2 pt-1 sticky top-0 bg-ink-soft border-b border-ink-border"
+                  >
+                    <input
+                      type="text"
+                      class="rep-dropdown-search w-full bg-ink border border-ink-border rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-brand transition-all"
+                      placeholder="Buscar marca..."
+                    />
+                  </div>
+                  <div class="rep-dropdown-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+                >Categoria</label
+              >
+              <div class="relative" data-dropdown-repuesto="categoria">
+                <button
+                  type="button"
+                  class="rep-dropdown-toggle w-full bg-ink border border-ink-border rounded-lg px-4 py-3 text-sm text-white flex items-center justify-between gap-2 hover:border-brand focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+                >
+                  <span class="rep-dropdown-label truncate text-zinc-500"
+                    >Sin categoria</span
+                  >
+                  <svg
+                    class="w-4 h-4 shrink-0 text-zinc-500 rep-dropdown-chevron transition-transform"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <input type="hidden" id="repuesto-categoria" />
+                <div
+                  class="rep-dropdown-menu hidden absolute z-50 mt-1.5 w-full bg-ink-soft border border-ink-border rounded-lg shadow-2xl py-1.5 max-h-64 overflow-y-auto"
+                >
+                  <div
+                    class="px-3 pb-2 pt-1 sticky top-0 bg-ink-soft border-b border-ink-border"
+                  >
+                    <input
+                      type="text"
+                      class="rep-dropdown-search w-full bg-ink border border-ink-border rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-brand transition-all"
+                      placeholder="Buscar categoria..."
+                    />
+                  </div>
+                  <div class="rep-dropdown-list"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="field mb-4">
+            <textarea
+              id="repuesto-descripcion"
+              placeholder=" "
+              rows="2"
+            ></textarea>
+            <label for="repuesto-descripcion">Descripcion (opcional)</label>
+          </div>
+
+          <div class="field mb-4">
+            <textarea
+              id="repuesto-compatibilidad"
+              placeholder=" "
+              rows="2"
+            ></textarea>
+            <label for="repuesto-compatibilidad">Compatible con (motos)</label>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="field">
+              <input
+                type="text"
+                id="repuesto-stock"
+                placeholder=" "
+                inputmode="numeric"
+                required
+              />
+              <label for="repuesto-stock">Stock inicial</label>
+            </div>
+            <div class="field">
+              <input
+                type="text"
+                id="repuesto-stock-minimo"
+                placeholder=" "
+                inputmode="numeric"
+              />
+              <label for="repuesto-stock-minimo">Stock minimo</label>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="field">
+              <input
+                type="text"
+                id="repuesto-precio-compra"
+                placeholder=" "
+                inputmode="numeric"
+              />
+              <label for="repuesto-precio-compra">Precio de compra</label>
+            </div>
+            <div class="field">
+              <input
+                type="text"
+                id="repuesto-precio-venta"
+                placeholder=" "
+                inputmode="numeric"
+                required
+              />
+              <label for="repuesto-precio-venta">Precio de venta</label>
+            </div>
+          </div>
+
+          <div
+            id="repuesto-margen-info"
+            class="hidden bg-ink border border-ink-border rounded-xl p-4 space-y-2 text-sm mb-4"
+          >
+            <div class="flex justify-between">
+              <span class="text-zinc-500">Margen de ganancia:</span>
+              <span id="repuesto-margen" class="font-medium text-brand"
+                >$0</span
+              >
+            </div>
+            <div class="flex justify-between">
+              <span class="text-zinc-500">Porcentaje de margen:</span>
+              <span id="repuesto-porcentaje" class="font-medium text-brand"
+                >0%</span
+              >
+            </div>
+          </div>
+
+          <div>
+            <label
+              class="block text-xs text-zinc-500 mb-1.5 font-medium uppercase tracking-wider"
+              >Proveedor (opcional)</label
+            >
+            <div class="relative" data-dropdown-repuesto="proveedor">
+              <button
+                type="button"
+                class="rep-dropdown-toggle w-full bg-ink border border-ink-border rounded-lg px-4 py-3 text-sm text-white flex items-center justify-between gap-2 hover:border-brand focus:border-brand focus:ring-2 focus:ring-brand/30 transition-all"
+              >
+                <span class="rep-dropdown-label truncate text-zinc-500"
+                  >Sin proveedor</span
+                >
+                <svg
+                  class="w-4 h-4 shrink-0 text-zinc-500 rep-dropdown-chevron transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+              <input type="hidden" id="repuesto-proveedor" />
+              <div
+                class="rep-dropdown-menu hidden absolute z-50 mt-1.5 w-full bg-ink-soft border border-ink-border rounded-lg shadow-2xl py-1.5 max-h-64 overflow-y-auto"
+              >
+                <div
+                  class="px-3 pb-2 pt-1 sticky top-0 bg-ink-soft border-b border-ink-border"
+                >
+                  <input
+                    type="text"
+                    class="rep-dropdown-search w-full bg-ink border border-ink-border rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 focus:border-brand transition-all"
+                    placeholder="Buscar proveedor..."
+                  />
+                </div>
+                <div class="rep-dropdown-list"></div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-cancelar-repuesto"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-repuesto"
+            id="btn-guardar-repuesto"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal ajustar stock -->
+    <div
+      id="modal-ajustar-stock"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-ink-soft border border-ink-border rounded-2xl"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border"
+        >
+          <h2 class="text-lg font-bold">Ajustar stock</h2>
+        </div>
+        <form id="form-ajustar-stock" class="px-6 py-5" novalidate>
+          <input type="hidden" id="ajustar-repuesto-id" />
+          <p id="ajustar-repuesto-nombre" class="text-sm text-zinc-400 mb-4">
+            -
+          </p>
+          <p
+            id="ajustar-repuesto-stock-actual"
+            class="text-sm text-zinc-500 mb-4"
+          >
+            Stock actual: 0
+          </p>
+          <div class="field mb-4">
+            <input
+              type="text"
+              id="ajustar-cantidad"
+              placeholder=" "
+              inputmode="numeric"
+              required
+            />
+            <label for="ajustar-cantidad">Cantidad (usa - para restar)</label>
+          </div>
+          <div class="field mb-4">
+            <input type="text" id="ajustar-motivo" placeholder=" " />
+            <label for="ajustar-motivo">Motivo (opcional)</label>
+          </div>
+        </form>
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3">
+          <button
+            type="button"
+            id="btn-cancelar-ajustar"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-ajustar-stock"
+            id="btn-guardar-ajustar"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Ajustar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal detalle repuesto -->
+    <div
+      id="modal-detalle-repuesto"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-lg bg-ink-soft border border-ink-border rounded-2xl max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border shrink-0"
+        >
+          <h2 class="text-lg font-bold">Detalle del repuesto</h2>
+        </div>
+        <div
+          id="detalle-repuesto-contenido"
+          class="flex-1 overflow-y-auto px-6 py-5"
+        ></div>
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3 shrink-0">
+          <button
+            type="button"
+            id="btn-cerrar-detalle-repuesto"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal marca -->
+    <div
+      id="modal-marca"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-ink-soft border border-ink-border rounded-2xl"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border"
+        >
+          <h2 id="modal-marca-titulo" class="text-lg font-bold">Nueva marca</h2>
+        </div>
+        <form id="form-marca" class="px-6 py-5" novalidate>
+          <input type="hidden" id="marca-id" />
+          <div class="field mb-4">
+            <input type="text" id="marca-nombre" placeholder=" " required />
+            <label for="marca-nombre">Nombre de la marca</label>
+          </div>
+          <div class="field mb-4">
+            <textarea
+              id="marca-descripcion"
+              placeholder=" "
+              rows="2"
+            ></textarea>
+            <label for="marca-descripcion">Descripcion (opcional)</label>
+          </div>
+        </form>
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3">
+          <button
+            type="button"
+            id="btn-cancelar-marca"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-marca"
+            id="btn-guardar-marca"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal categoria -->
+    <div
+      id="modal-categoria"
+      class="fixed inset-0 z-[500] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-ink-soft border border-ink-border rounded-2xl"
+      >
+        <div
+          class="flex items-center justify-between px-6 py-4 border-b border-ink-border"
+        >
+          <h2 id="modal-categoria-titulo" class="text-lg font-bold">
+            Nueva categoria
+          </h2>
+        </div>
+        <form id="form-categoria" class="px-6 py-5" novalidate>
+          <input type="hidden" id="categoria-id" />
+          <div class="field mb-4">
+            <input type="text" id="categoria-nombre" placeholder=" " required />
+            <label for="categoria-nombre">Nombre de la categoria</label>
+          </div>
+          <div class="field mb-4">
+            <textarea
+              id="categoria-descripcion"
+              placeholder=" "
+              rows="2"
+            ></textarea>
+            <label for="categoria-descripcion">Descripcion (opcional)</label>
+          </div>
+        </form>
+        <div class="px-6 py-4 border-t border-ink-border flex gap-3">
+          <button
+            type="button"
+            id="btn-cancelar-categoria"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="form-categoria"
+            id="btn-guardar-categoria"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all"
+          >
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal venta exitosa -->
+    <div
+      id="modal-venta-exitosa"
+      class="fixed inset-0 z-[550] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-ink-soft border border-ink-border rounded-2xl overflow-hidden"
+      >
+        <!-- Header verde -->
+        <div class="bg-brand/10 border-b border-brand/30 p-6 text-center">
+          <div
+            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand/20 mb-3"
+          >
+            <svg
+              class="w-8 h-8 text-brand"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+          </div>
+          <h3 class="font-bold text-xl text-brand mb-1">Venta realizada</h3>
+          <p class="text-xs text-zinc-400">
+            La transaccion se guardo correctamente
+          </p>
+        </div>
+
+        <!-- Resumen -->
+        <div class="p-5 space-y-3">
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-zinc-500">N. Recibo</span>
+            <span
+              id="exito-recibo"
+              class="font-mono text-xs font-bold text-white"
+              >-</span
+            >
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-zinc-500">Total</span>
+            <span id="exito-total" class="font-bold text-brand text-lg"
+              >$0</span
+            >
+          </div>
+          <div class="flex justify-between items-center text-sm">
+            <span class="text-zinc-500">Recibido</span>
+            <span id="exito-recibido" class="text-white">$0</span>
+          </div>
+          <div
+            class="flex justify-between items-center text-sm pt-2 border-t border-ink-border"
+          >
+            <span class="text-zinc-500">Cambio</span>
+            <span id="exito-cambio" class="font-bold text-brand">$0</span>
+          </div>
+        </div>
+
+        <!-- Botones -->
+        <div
+          class="p-4 border-t border-ink-border flex flex-col sm:flex-row gap-2"
+        >
+          <button
+            id="btn-cerrar-exito"
+            class="flex-1 bg-transparent border border-ink-border hover:border-brand text-white font-semibold py-3 rounded-lg transition-all order-2 sm:order-1"
+          >
+            Cerrar
+          </button>
+          <button
+            id="btn-imprimir-exito"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-3 rounded-lg transition-all flex items-center justify-center gap-2 order-1 sm:order-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
+            </svg>
+            Imprimir recibo
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal recibo (imprimible) -->
+    <div
+      id="modal-recibo"
+      class="fixed inset-0 z-[600] hidden items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+    >
+      <div
+        class="w-full max-w-md bg-white text-black rounded-lg max-h-[90vh] flex flex-col"
+      >
+        <div
+          class="flex items-center justify-between px-4 py-3 border-b border-gray-200 shrink-0 print:hidden"
+        >
+          <h2 class="text-base font-bold">Recibo de venta</h2>
+        </div>
+
+        <div
+          id="recibo-contenido"
+          class="flex-1 overflow-y-auto p-5 font-mono text-xs"
+        ></div>
+
+        <div
+          class="px-4 py-3 border-t border-gray-200 flex gap-2 shrink-0 print:hidden"
+        >
+          <button
+            type="button"
+            id="btn-cerrar-recibo"
+            class="flex-1 border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold py-2.5 rounded-lg transition-all"
+          >
+            Cerrar
+          </button>
+          <button
+            type="button"
+            id="btn-imprimir-recibo"
+            class="flex-1 bg-brand hover:bg-brand-dark text-white font-semibold py-2.5 rounded-lg transition-all flex items-center justify-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+              />
+            </svg>
+            Imprimir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/repuestos.js"></script>
+  </body>
+</html>
