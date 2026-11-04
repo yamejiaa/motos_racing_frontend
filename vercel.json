@@ -4,20 +4,50 @@
       "source": "/api/:path*",
       "destination": "https://motos-racing-backend.onrender.com/api/:path*"
     },
-    { "source": "/login", "destination": "/src/pages/login.html" },
-    { "source": "/dashboard", "destination": "/src/pages/dashboard.html" },
-    { "source": "/clientes", "destination": "/src/pages/clientes.html" },
-    { "source": "/motos", "destination": "/src/pages/motos.html" },
-    { "source": "/mecanicos", "destination": "/src/pages/mecanicos.html" },
-    { "source": "/servicios", "destination": "/src/pages/servicios.html" },
-    { "source": "/repuestos", "destination": "/src/pages/repuestos.html" },
-    { "source": "/proveedores", "destination": "/src/pages/proveedores.html" },
-    { "source": "/finanzas", "destination": "/src/pages/finanzas.html" },
+    {
+      "source": "/login",
+      "destination": "/src/pages/login.html"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/src/pages/dashboard.html"
+    },
+    {
+      "source": "/clientes",
+      "destination": "/src/pages/clientes.html"
+    },
+    {
+      "source": "/motos",
+      "destination": "/src/pages/motos.html"
+    },
+    {
+      "source": "/mecanicos",
+      "destination": "/src/pages/mecanicos.html"
+    },
+    {
+      "source": "/servicios",
+      "destination": "/src/pages/servicios.html"
+    },
+    {
+      "source": "/repuestos",
+      "destination": "/src/pages/repuestos.html"
+    },
+    {
+      "source": "/proveedores",
+      "destination": "/src/pages/proveedores.html"
+    },
+    {
+      "source": "/finanzas",
+      "destination": "/src/pages/finanzas.html"
+    },
     {
       "source": "/transacciones",
       "destination": "/src/pages/transacciones.html"
     },
-    { "source": "/perfil", "destination": "/src/pages/perfil.html" },
+    {
+      "source": "/perfil",
+      "destination": "/src/pages/perfil.html"
+    },
     {
       "source": "/cambiar-password",
       "destination": "/src/pages/cambiar-password.html"
@@ -26,6 +56,9 @@
       "source": "/configuracion",
       "destination": "/src/pages/configuracion.html"
     },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
