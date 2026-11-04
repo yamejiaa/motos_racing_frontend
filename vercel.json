@@ -1,7 +1,16 @@
 {
   "rewrites": [
-    { "source": "/login", "destination": "/src/pages/login.html" },
-    { "source": "/dashboard", "destination": "/src/pages/dashboard.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/api/:path*",
+      "destination": "https://motos-racing-backend.onrender.com/api/:path*"
+    },
+    {
+      "source": "/login",
+      "destination": "/src/pages/login.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
