@@ -1,24 +1,35 @@
 import "../css/tailwind.css";
 
 const init = async () => {
+  const token = localStorage.getItem("mysh_token");
+
+  // Si no hay token, directo al login
+  if (!token) {
+    window.location.href = "/login";
+    return;
+  }
+
   try {
+    // Hacemos la petición a Vercel (proxy) o directamente a Render
+    // Enviamos el token en la cabecera Authorization
     const res = await fetch("/api/auth/verify", {
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (res.ok) {
       const data = await res.json();
 
       if (data.usuario.debeCambiarPassword) {
-        // Usamos la ruta limpia, Vercel la manejará
         window.location.href = "/login?cambio=obligatorio";
         return;
       }
 
-      // Redirigimos al dashboard con ruta limpia
       window.location.href = "/dashboard";
     } else {
-      // Redirigimos al login con ruta limpia
+      // Si el token es inválido o expiró, lo borramos y al login
+      localStorage.removeItem("mysh_token");
       window.location.href = "/login";
     }
   } catch (error) {

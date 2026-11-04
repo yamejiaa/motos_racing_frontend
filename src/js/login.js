@@ -108,8 +108,14 @@ const manejarLogin = async (e) => {
   try {
     const data = await api.login(email, password);
 
+    // GUARDAR EL TOKEN AQUÍ
+    if (data.token) {
+      localStorage.setItem("mysh_token", data.token);
+    }
+
     bloquearScroll();
     modalBienvenidaNombre.textContent = `Bienvenido, ${data.usuario.nombre}`;
+    // ...
     modalBienvenida.classList.remove("hidden");
     modalBienvenida.classList.add("flex");
 
@@ -124,7 +130,7 @@ const manejarLogin = async (e) => {
       modalCambio.classList.remove("hidden");
       modalCambio.classList.add("flex");
     } else {
-      window.location.href = "/src/pages/dashboard.html";
+      window.location.href = "/dashboard.html";
     }
   } catch (error) {
     const codigo = error.data?.codigo;
@@ -335,7 +341,7 @@ const manejarCambioObligatorio = async (e) => {
     });
 
     setTimeout(() => {
-      window.location.href = "/src/pages/dashboard.html";
+      window.location.href = "/dashboard.html";
     }, 1500);
   } catch (error) {
     mostrarMensajeFormulario(formCambio, error.message, "error");

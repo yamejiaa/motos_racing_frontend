@@ -1,4 +1,4 @@
-// Wrapper de fetch con credenciales y manejo de errores
+// Wrapper de fetch con token y manejo de errores
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 // ─── Cerrar sesion por login en otro dispositivo ─
@@ -19,32 +19,33 @@ const cerrarSesionPorInactividad = () => {
       allowEscapeKey: false,
     }).then(async () => {
       try {
-        await fetch("/api/auth/logout", {
-          method: "POST",
-          credentials: "include",
-        });
+        // Ya no dependemos de cookies, limpiamos el localStorage
+        localStorage.removeItem("mysh_token");
       } catch (e) {}
-      window.location.href = "/src/pages/login.html";
+      window.location.href = "/login";
     });
   } else {
-    window.location.href = "/src/pages/login.html";
+    localStorage.removeItem("mysh_token");
+    window.location.href = "/login";
   }
 };
 
 const request = async (endpoint, options = {}) => {
+  // Leer el token del localStorage
+  const token = localStorage.getItem("mysh_token");
+
   const config = {
-    credentials: "include",
     headers: {
-      "Content-Type": "application/json",
+      // Si es FormData, no enviamos Content-Type, el navegador lo hace
+      ...(options.body instanceof FormData
+        ? {}
+        : { "Content-Type": "application/json" }),
+      // Añadir el token si existe
+      ...(token && { Authorization: `Bearer ${token}` }),
       ...(options.headers || {}),
     },
     ...options,
   };
-
-  // Si es FormData, quitar Content-Type para que el navegador lo ponga solo
-  if (options.body instanceof FormData) {
-    delete config.headers["Content-Type"];
-  }
 
   // Serializar body si es objeto
   if (
@@ -68,7 +69,7 @@ const request = async (endpoint, options = {}) => {
     // Manejo especial: sesion invalida por login en otro dispositivo
     if (data?.codigo === "SESION_INVALIDADA") {
       if (window.__avisoSesionMostrado) {
-        window.location.href = "/src/pages/login.html";
+        window.location.href = "/login";
       } else {
         cerrarSesionPorInactividad();
       }
@@ -76,6 +77,19 @@ const request = async (endpoint, options = {}) => {
       err.status = res.status;
       err.data = data;
       throw err;
+    }
+
+    // Si el token expiró o es inválido, limpiamos y mandamos al login
+    if (res.status === 401 || res.status === 403) {
+      // Opcional: podrías verificar si es un error de credenciales o de sesión
+      // Si es sesión, limpiar token
+      if (
+        data?.codigo === "TOKEN_INVALIDO" ||
+        data?.codigo === "TOKEN_EXPIRADO"
+      ) {
+        localStorage.removeItem("mysh_token");
+        window.location.href = "/login";
+      }
     }
 
     const err = new Error(data?.msg || "Error en la peticion");
