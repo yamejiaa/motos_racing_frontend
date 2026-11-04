@@ -7,43 +7,39 @@ const MENU_ITEMS = [
     id: "dashboard",
     label: "Dashboard",
     icon: "home",
-    href: "/src/pages/dashboard.html",
+    href: "/dashboard",
   },
   {
     id: "mantenimientos",
     label: "Mantenimientos",
     icon: "edit",
     submenu: [
-      { label: "Lista", href: "/src/pages/mantenimientos.html" },
-      { label: "Kanban", href: "/src/pages/mantenimientos.html?view=kanban" },
+      { label: "Lista", href: "/mantenimientos" },
+      { label: "Kanban", href: "/mantenimientos?view=kanban" },
     ],
   },
   {
     id: "clientes",
     label: "Clientes",
     icon: "users",
-    href: "/src/pages/clientes.html",
+    href: "/clientes",
   },
   {
     id: "motos",
     label: "Motos",
     icon: "moto",
-    href: "/src/pages/motos.html",
+    href: "/motos",
   },
   {
     id: "mecanicos",
     label: "Mecanicos",
     icon: "worker",
     submenu: [
-      {
-        label: "Todos",
-        href: "/src/pages/mecanicos.html",
-        hrefMatch: "/src/pages/mecanicos.html",
-      },
+      { label: "Todos", href: "/mecanicos", hrefMatch: "/mecanicos" },
       {
         label: "Pagos y comisiones",
-        href: "/src/pages/mecanicos.html?view=pagos",
-        hrefMatch: "/src/pages/mecanicos.html?view=pagos",
+        href: "/mecanicos?view=pagos",
+        hrefMatch: "/mecanicos?view=pagos",
       },
     ],
   },
@@ -52,8 +48,8 @@ const MENU_ITEMS = [
     label: "Servicios",
     icon: "clipboard",
     submenu: [
-      { label: "Catalogo", href: "/src/pages/servicios.html" },
-      { label: "Diarios", href: "/src/pages/servicios.html?view=diarios" },
+      { label: "Catalogo", href: "/servicios" },
+      { label: "Diarios", href: "/servicios?view=diarios" },
     ],
   },
   {
@@ -61,30 +57,27 @@ const MENU_ITEMS = [
     label: "Repuestos",
     icon: "box",
     submenu: [
-      { label: "Catalogo", href: "/src/pages/repuestos.html" },
-      { label: "Vender", href: "/src/pages/repuestos.html?view=vender" },
-      { label: "Historial", href: "/src/pages/repuestos.html?view=historial" },
-      { label: "Marcas", href: "/src/pages/repuestos.html?view=marcas" },
-      {
-        label: "Categorias",
-        href: "/src/pages/repuestos.html?view=categorias",
-      },
+      { label: "Catalogo", href: "/repuestos" },
+      { label: "Vender", href: "/repuestos?view=vender" },
+      { label: "Historial", href: "/repuestos?view=historial" },
+      { label: "Marcas", href: "/repuestos?view=marcas" },
+      { label: "Categorias", href: "/repuestos?view=categorias" },
     ],
   },
   {
     id: "proveedores",
     label: "Proveedores",
     icon: "truck",
-    href: "/src/pages/proveedores.html",
+    href: "/proveedores",
   },
   {
     id: "finanzas",
     label: "Finanzas",
     icon: "cash",
     submenu: [
-      { label: "Resumen", href: "/src/pages/finanzas.html" },
-      { label: "Ingresos", href: "/src/pages/transacciones.html?tipo=ingreso" },
-      { label: "Egresos", href: "/src/pages/transacciones.html?tipo=egreso" },
+      { label: "Resumen", href: "/finanzas" },
+      { label: "Ingresos", href: "/transacciones?tipo=ingreso" },
+      { label: "Egresos", href: "/transacciones?tipo=egreso" },
     ],
   },
   {
@@ -92,9 +85,9 @@ const MENU_ITEMS = [
     label: "Configuracion",
     icon: "cog",
     submenu: [
-      { label: "Mi perfil", href: "/src/pages/perfil.html" },
-      { label: "Cambiar contrasena", href: "/src/pages/cambiar-password.html" },
-      { label: "Sistema", href: "/src/pages/configuracion.html" },
+      { label: "Mi perfil", href: "/perfil" },
+      { label: "Cambiar contrasena", href: "/cambiar-password" },
+      { label: "Sistema", href: "/configuracion" },
     ],
   },
 ];
@@ -214,7 +207,7 @@ const generarHeaderHTML = (titulo, subtitulo) => {
             <div class="p-8 text-center text-zinc-500 text-sm">Cargando...</div>
           </div>
           <div class="border-t border-ink-border px-4 py-2">
-            <a href="/src/pages/notificaciones.html" class="block text-center text-xs text-zinc-500 hover:text-brand transition-colors py-1">Ver todas</a>
+            <a href="/notificaciones" class="block text-center text-xs text-zinc-500 hover:text-brand transition-colors py-1">Ver todas</a>
           </div>
         </div>
       </div>
@@ -359,11 +352,11 @@ export const construirLayout = async ({
     usuario = data.usuario;
   } catch (error) {
     if (error.status === 401) {
-      window.location.href = "/src/pages/login.html";
+      window.location.href = "/login"; // <--- RUTA CORREGIDA
       return null;
     }
     if (error.status === 403 && error.data?.codigo === "CAMBIO_OBLIGATORIO") {
-      window.location.href = "/src/pages/login.html?cambio=obligatorio";
+      window.location.href = "/login?cambio=obligatorio"; // <--- RUTA CORREGIDA
       return null;
     }
     throw error;
@@ -558,7 +551,7 @@ export const construirLayout = async ({
       if (result.isConfirmed) {
         try {
           await api.logout();
-          window.location.href = "/src/pages/login.html";
+          window.location.href = "/login"; // <--- RUTA CORREGIDA
         } catch (error) {
           console.error(error);
         }
@@ -630,9 +623,9 @@ const mostrarAvisoSesionInvalidada = (motivo) => {
       } catch (e) {
         // Ignorar errores al cerrar sesion
       }
-      window.location.href = "/src/pages/login.html";
+      window.location.href = "/login"; // <--- RUTA CORREGIDA
     });
   } else {
-    window.location.href = "/src/pages/login.html";
+    window.location.href = "/login"; // <--- RUTA CORREGIDA
   }
 };
