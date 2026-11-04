@@ -1,5 +1,5 @@
 // Wrapper de fetch con credenciales y manejo de errores
-const API_BASE = "/api";
+const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 
 // ─── Cerrar sesion por login en otro dispositivo ─
 const cerrarSesionPorInactividad = () => {
