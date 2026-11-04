@@ -108,14 +108,15 @@ const manejarLogin = async (e) => {
   try {
     const data = await api.login(email, password);
 
-    // GUARDAR EL TOKEN AQUÍ
+    // Guardar el token en localStorage
     if (data.token) {
       localStorage.setItem("mysh_token", data.token);
+    } else {
+      console.warn("El backend no devolvió el token en la respuesta");
     }
 
     bloquearScroll();
     modalBienvenidaNombre.textContent = `Bienvenido, ${data.usuario.nombre}`;
-    // ...
     modalBienvenida.classList.remove("hidden");
     modalBienvenida.classList.add("flex");
 
@@ -124,13 +125,11 @@ const manejarLogin = async (e) => {
     if (data.usuario.debeCambiarPassword) {
       modalBienvenida.classList.add("hidden");
       modalBienvenida.classList.remove("flex");
-      // OJO: no desbloqueamos aqui porque enseguida se abre el modal de cambio
-      // El desbloqueo ocurre cuando el usuario cambia la contrasena o cierra ese modal.
-
       modalCambio.classList.remove("hidden");
       modalCambio.classList.add("flex");
     } else {
-      window.location.href = "/dashboard.html";
+      // Redirigir al dashboard (ruta manejada por vercel.json)
+      window.location.href = "/dashboard";
     }
   } catch (error) {
     const codigo = error.data?.codigo;
@@ -221,7 +220,6 @@ const manejarForgot = async (e) => {
   try {
     const data = await api.solicitarReset(email);
 
-    // Cerrar modal y mostrar SweetAlert de exito
     cerrarModalForgot();
 
     window.Swal.fire({
@@ -237,7 +235,6 @@ const manejarForgot = async (e) => {
     const codigo = error.data?.codigo;
     const mensaje = error.message || "Error al enviar el enlace";
 
-    // Si la cuenta no esta bloqueada, mostrar mensaje claro
     if (codigo === "NO_BLOQUEADA") {
       mostrarMensajeFormulario(
         formForgot,
@@ -327,7 +324,12 @@ const manejarCambioObligatorio = async (e) => {
   }
 
   try {
-    await api.cambiarPassword("", passwordNueva);
+    const data = await api.cambiarPassword("", passwordNueva);
+
+    // Actualizar el token si el backend devuelve uno nuevo
+    if (data && data.token) {
+      localStorage.setItem("mysh_token", data.token);
+    }
 
     window.Swal.fire({
       icon: "success",
@@ -341,7 +343,8 @@ const manejarCambioObligatorio = async (e) => {
     });
 
     setTimeout(() => {
-      window.location.href = "/dashboard.html";
+      // Redirigir al dashboard (ruta manejada por vercel.json)
+      window.location.href = "/dashboard";
     }, 1500);
   } catch (error) {
     mostrarMensajeFormulario(formCambio, error.message, "error");
