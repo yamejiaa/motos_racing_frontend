@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { resolve } from "path";
 
 export default defineConfig({
   root: ".",
@@ -21,5 +22,12 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: false,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        login: resolve(__dirname, "src/pages/login.html"),
+        // dashboard: resolve(__dirname, "src/pages/dashboard.html"), // Descomenta si tienes este archivo
+      },
+    },
   },
 });

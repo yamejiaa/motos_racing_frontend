@@ -10,16 +10,19 @@ const init = async () => {
       const data = await res.json();
 
       if (data.usuario.debeCambiarPassword) {
-        window.location.href = "/src/pages/login.html?cambio=obligatorio";
+        // Usamos la ruta limpia, Vercel la manejará
+        window.location.href = "/login?cambio=obligatorio";
         return;
       }
 
-      window.location.href = "/src/pages/dashboard.html";
+      // Redirigimos al dashboard con ruta limpia
+      window.location.href = "/dashboard";
     } else {
-      window.location.href = "/src/pages/login.html";
+      // Redirigimos al login con ruta limpia
+      window.location.href = "/login";
     }
   } catch (error) {
-    window.location.href = "/src/pages/login.html";
+    window.location.href = "/login";
   }
 };
 
